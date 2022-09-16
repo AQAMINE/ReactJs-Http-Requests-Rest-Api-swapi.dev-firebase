@@ -14,7 +14,8 @@ function App() {
       setIsLoading(true);
       setError(null);
       try{
-          const response = await fetch('https://swapi.dev/api/films');
+          // const response = await fetch('https://swapi.dev/api/films');
+          const response = await fetch('https://reactjs-http-rest-api-default-rtdb.firebaseio.com/movies.json');
           //We are creating our own error because fitch does not support if we are using axios we can catch the error
           if (!response.ok) {
             throw new Error('Something went wrong! Please check later.');
