@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 
 import MoviesList from './components/MoviesList';
 import './App.css';
@@ -8,35 +8,41 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   
-  const fetchMoviesHandler = async () => {
-    setIsLoading(true);
-    setError(null);
-    try{
-        const response = await fetch('https://swapi.dev/api/films');
-        //We are creating our own error because fitch does not support if we are using axios we can catch the error
-        if (!response.ok) {
-          throw new Error('Something went wrong! Please check later.');
-        }
+  
+  const fetchMoviesHandler = useCallback ( async () => {
+      setIsLoading(true);
+      setError(null);
+      try{
+          const response = await fetch('https://swapi.dev/api/films');
+          //We are creating our own error because fitch does not support if we are using axios we can catch the error
+          if (!response.ok) {
+            throw new Error('Something went wrong! Please check later.');
+          }
 
 
-        const data = await response.json();
+          const data = await response.json();
 
-        const trqnsformedMovies = data.results.map(movieData => {
-          return {
-            id: movieData.episode_id,
-            title: movieData.title,
-            openingText: movieData.opening_crawl,
-            releaseDate: movieData.release_date
+          const trqnsformedMovies = data.results.map(movieData => {
+            return {
+              id: movieData.episode_id,
+              title: movieData.title,
+              openingText: movieData.opening_crawl,
+              releaseDate: movieData.release_date
 
-          };
-        });
-        setMovies(trqnsformedMovies);
-        setIsLoading(false);
-    } catch (error) {
-      setError(error.message);
-    }
-    setIsLoading(false);
-  }
+            };
+          });
+          setMovies(trqnsformedMovies);
+          setIsLoading(false);
+      } catch (error) {
+        setError(error.message);
+      }
+      setIsLoading(false);
+  }, [])
+
+  useEffect(() => {
+    fetchMoviesHandler();
+  }, [fetchMoviesHandler]);
+
 
   let content = <p>Found no movies.</p>;
 
